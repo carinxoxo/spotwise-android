@@ -1,0 +1,70 @@
+name: Build Spotwise APK
+
+# Runs on every upload to main, or by hand: Actions -> Build Spotwise APK -> Run workflow.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install
+        run: npm ci
+
+      - name: Create Android project
+        run: |
+          npx cap add android
+          npx capacitor-assets generate --android --iconBackgroundColor '#0c1322' --iconBackgroundColorDark '#0c1322' --splashBackgroundColor '#0c1322' --splashBackgroundColorDark '#0c1322'
+          node scripts/setup-android.mjs
+          npx cap sync android
+
+      - name: Signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.SPOTWISE_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::Secret SPOTWISE_KEYSTORE_BASE64 is missing. Add it in Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 -d > android/app/spotwise-release.jks
+
+      - name: Build signed APK
+        working-directory: android
+        env:
+          SPOTWISE_KEYSTORE_PASSWORD: ${{ secrets.SPOTWISE_KEYSTORE_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Collect APK
+        run: cp android/app/build/outputs/apk/release/app-release.apk Spotwise.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Spotwise-APK
+          path: Spotwise.apk
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v2.0.${{ github.run_number }}
+          name: Spotwise 2.0.${{ github.run_number }}
+          files: Spotwise.apk
