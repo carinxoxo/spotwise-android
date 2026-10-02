@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "904318501337",
+    "project_id": "spotwise-6692f",
+    "storage_bucket": "spotwise-6692f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904318501337:android:2246c9265dbe3584d1d9c8",
+        "android_client_info": {
+          "package_name": "com.spotwise.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYWDkmVM2da5_u8mtBvjvFz63fRW0FlOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
