@@ -83,4 +83,20 @@ patch("android/app/src/main/AndroidManifest.xml", (s) =>
     )
     .replace(/(<uses-permission android:name="android.permission.INTERNET" \/>)/, `$1\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />`),
 );
-console.log("Notifications ready (Firebase + icon + channel)");
+// 4. Native notifications: our own Firebase service + start-up code (no web bridge needed).
+cpSync("native/java", "android/app/src/main/java/com/spotwise/app", { recursive: true });
+patch("android/app/build.gradle", (s) =>
+  s.replace(/dependencies \{/, `dependencies {\n    implementation "com.google.firebase:firebase-messaging:24.1.0"`),
+);
+patch("android/app/src/main/AndroidManifest.xml", (s) =>
+  s.replace(
+    /<\/application>/,
+    `    <service android:name=".SpotwiseMessagingService" android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+    </application>`,
+  ),
+);
+console.log("Notifications ready (Firebase topic + native service + icon + channel)");
