@@ -1,0 +1,38 @@
+{
+  "appId": "com.spotwise.app",
+  "appName": "Spotwise",
+  "webDir": "www",
+  "backgroundColor": "#0c1322",
+  "server": {
+    "url": "https://spotwise-app.vercel.app",
+    "cleartext": false,
+    "errorPath": "offline.html",
+    "allowNavigation": [
+      "spotwise-app.vercel.app"
+    ]
+  },
+  "android": {
+    "appendUserAgent": "SpotwiseApp/2",
+    "adjustMarginsForEdgeToEdge": "force",
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 900,
+      "launchAutoHide": true,
+      "launchFadeOutDuration": 250,
+      "backgroundColor": "#0c1322",
+      "showSpinner": false,
+      "androidScaleType": "CENTER_INSIDE",
+      "splashFullScreen": false,
+      "splashImmersive": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0c1322",
+      "overlaysWebView": false
+    }
+  }
+}
