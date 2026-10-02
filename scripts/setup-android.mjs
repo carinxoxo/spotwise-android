@@ -60,6 +60,9 @@ patch("android/app/src/main/res/values/styles.xml", (s) =>
     .replace(/<resources>/, `<resources>\n    <color name="spotwiseBg">${BG}</color>`),
 );
 
+// 1b. Tell the website which app version this is (for the "Update available" bar).
+patch("capacitor.config.json", (s) => s.replace(/"appendUserAgent":\s*"[^"]*"/, `"appendUserAgent": "SpotwiseApp/${versionName}"`));
+
 console.log(`Spotwise Android ready: versionName ${versionName}, versionCode ${versionCode}`);
 
 // 3. Notifications: Firebase config, small white status-bar icon, default channel.
